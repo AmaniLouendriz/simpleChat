@@ -87,13 +87,16 @@ public class ChatClient extends AbstractClient
   
   private void handleCommand(String message) throws IOException {
 	
-      Scanner st = new Scanner(message).useDelimiter(" ");
+      Scanner st = new Scanner(message).useDelimiter(" ");// this is used when the user would like to change 
+      // the port or the host. It provides us with the parameter value to which we would like to change.
       String cmd = st.next();
       
       switch(cmd) {
       case "#quit":
+    	 this.closeConnection();
      	 this.quit();
      	 break;
+     	 
       case "#logoff":
     	  if(this.isConnected()) {
   			clientUI.display("The client is going to be disconnected.");
@@ -103,30 +106,45 @@ public class ChatClient extends AbstractClient
   			clientUI.display("The client is already disconnected.");
   		}		
      	 break;
+     	 
       case "#sethost":
-     	 String host = st.next();
+     	 String host = st.next();// here we have the host number
      	 if(!this.isConnected()) {
      		 this.setHost(host);
      	 }
      	 else {
-     		 System.err.println("The client is connected. Can't set up host.");
+     		 clientUI.display("The client is connected. Can't set up host. Please disconnect first.");
      	 }
      	 break;
+     	 
       case "#setport":
       	 int port = Integer.parseInt(st.next());
       	 if(!this.isConnected()) {
       		 this.setPort(port);
       	 }
       	 else {
-      		 System.err.println("The client is connected. Can't set up host.");
+      		 clientUI.display("The client is connected. Can't set up host. Please disconnect first.");
       	 }
       	 break;
+      	 
+      case "#login":
+    	  if(!this.isConnected()) {
+    		  this.openConnection();
+    	  }
+    	  else {
+    		  clientUI.display("Client is already connected.");
+    	  }
+    	  break;
+      case "#gethost":
+    	  clientUI.display("the host used is :" + this.getHost());
+    	  break;
+      case "#getport" :
+    	  clientUI.display("The port used is : " + this.getPort());
+    	  break;
       
-     	 
- 
-     	 
       default:
-     	 System.err.println("Command not known !");
+     	 clientUI.display("Command not known !");
+     	 
       
       
       	         }

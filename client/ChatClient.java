@@ -7,6 +7,7 @@ package client;
 import ocsf.client.*;
 import common.*;
 import java.io.*;
+import java.util.Scanner;
 
 /**
  * This class overrides some of the methods defined in the abstract
@@ -60,25 +61,81 @@ public class ChatClient extends AbstractClient
   }
 
   /**
-   * This method handles all data coming from the UI            
+   * This method handles all data coming from the UI as well as special commands.          
    *
    * @param message The message from the UI.    
    */
   public void handleMessageFromClientUI(String message)
   {
-    try
-    {
-      sendToServer(message);
-    }
-    catch(IOException e)
-    {
-      clientUI.display
-        ("Could not send message to server.  Terminating client.");
-      quit();
-    }
+		  try
+		    {
+			  if (message.startsWith("#")) {
+				  handleCommand(message);
+			  }
+			  else{
+				  sendToServer(message);
+				  }
+		    }
+		    catch(IOException e)
+		    {
+		      clientUI.display
+		        ("Could not send message to server.  Terminating client.");
+		      quit();
+		    }  
+	  
   }
   
-  /**
+  private void handleCommand(String message) throws IOException {
+	
+      Scanner st = new Scanner(message).useDelimiter(" ");
+      String cmd = st.next();
+      
+      switch(cmd) {
+      case "#quit":
+     	 this.quit();
+     	 break;
+      case "#logoff":
+    	  if(this.isConnected()) {
+  			clientUI.display("The client is going to be disconnected.");
+  			this.closeConnection();
+  		}
+  		else {
+  			clientUI.display("The client is already disconnected.");
+  		}		
+     	 break;
+      case "#sethost":
+     	 String host = st.next();
+     	 if(!this.isConnected()) {
+     		 this.setHost(host);
+     	 }
+     	 else {
+     		 System.err.println("The client is connected. Can't set up host.");
+     	 }
+     	 break;
+      case "#setport":
+      	 int port = Integer.parseInt(st.next());
+      	 if(!this.isConnected()) {
+      		 this.setPort(port);
+      	 }
+      	 else {
+      		 System.err.println("The client is connected. Can't set up host.");
+      	 }
+      	 break;
+      
+     	 
+ 
+     	 
+      default:
+     	 System.err.println("Command not known !");
+      
+      
+      	         }
+	
+	
+}
+
+
+/**
    * This method terminates the client.
    */
   public void quit()
@@ -117,7 +174,7 @@ public class ChatClient extends AbstractClient
 	protected void connectionException(Exception exception) {
 	  
 	  clientUI.display("The server has shut down. ");
-	  System.exit(0);
+	  this.quit();
 	}
 
 	/**

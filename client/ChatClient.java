@@ -27,7 +27,7 @@ public class ChatClient extends AbstractClient
    * the display method in the client.
    */
   ChatIF clientUI; 
-
+  String login;
   
   //Constructors ****************************************************
   
@@ -194,11 +194,24 @@ public class ChatClient extends AbstractClient
 	  clientUI.display("The server has shut down. ");
 	  this.quit();
 	}
+  /** Method I added to get the login ID of the user*/
+  public String getLogin() {
+	  return this.login;
+  }
+  
+  /** Method I added to set the login ID of the user*/
+  public void setLogin(String data) {
+	  this.login = data;
+  }
 
-	/**
-	 * Hook method called after a connection has been established. The default
+  /**
+	 * Implementation of a Hook method called after a connection has been established. The default
 	 * implementation does nothing. It may be overridden by subclasses to do
 	 * anything they wish.
 	 */
+	protected void connectionEstablished() {
+		String data = "#login" + login ;  // client.getLogin() 
+		clientUI.display(data);
+	}
 }
 //End of ChatClient class

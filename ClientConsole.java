@@ -40,6 +40,8 @@ public class ClientConsole implements ChatIF
    * Scanner to read from the console
    */
   Scanner fromConsole; 
+  
+  String login;
 
   
   //Constructors ****************************************************
@@ -117,17 +119,23 @@ public class ClientConsole implements ChatIF
    */
   public static void main(String[] args) 
   {
+	String login = "";
     String host = "";
     int port = 0;
 
 
     try
     {
-      host = args[0];
-      port = Integer.parseInt(args[1]);
+      login = args[0];
+      host = args[1];
+      port = Integer.parseInt(args[2]);
     }
     catch(ArrayIndexOutOfBoundsException e)
     {
+    	if (login == null) {
+    		System.err.println("Client haven't specified the userName. Terminating Connection to Client.");
+    		System.exit(0);
+    	}
       host = "localhost";
       port = DEFAULT_PORT;
       
@@ -135,7 +143,7 @@ public class ClientConsole implements ChatIF
     catch(NumberFormatException ne) {
     	port = DEFAULT_PORT;
     }
-    
+    //client.setLogin(login);
     ClientConsole chat= new ClientConsole(host, port);
     chat.accept();  //Wait for console data
   }

@@ -123,7 +123,7 @@ public class ChatClient extends AbstractClient
       		 this.setPort(port);
       	 }
       	 else {
-      		 clientUI.display("The client is connected. Can't set up host. Please disconnect first.");
+      		 clientUI.display("The client is connected. Can't set up port. Please disconnect first.");
       	 }
       	 break;
       	 
